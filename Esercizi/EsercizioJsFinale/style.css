@@ -1,0 +1,15 @@
+th > span
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+#tableHeaderRow i
+{
+    display: none;
+}
+
+#tableHeaderRow i.bi-display-yes
+{
+    display: inline;
+}
