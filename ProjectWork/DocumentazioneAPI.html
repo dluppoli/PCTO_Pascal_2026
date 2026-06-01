@@ -606,6 +606,54 @@ code {
       </div>
     </article>
     
+        <article class="endpoint-card" data-group="Spazi" data-method="GET" data-search="spazi get /spaces/availability?date=2026-05-30 disponibilità giornaliera">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/spaces/availability/{id}/?date=2026-05-30</span>
+        <span class="summary">Disponibilità giornaliera di uno spazio</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/spaces/availability/{id}?date=2026-05-30</div>
+            <div class="mono param">id = spazio di cui restituire la desponibilità</div>
+            <div class="mono param">date = data di cui restituire la desponibilità</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;,
+    &quot;slots&quot;: [
+      {
+        &quot;id&quot;: 9,
+        &quot;start&quot;: &quot;2026-05-30T09:00:00&quot;,
+        &quot;end&quot;: &quot;2026-05-30T10:00:00&quot;,
+        &quot;available&quot;: true
+      }
+    ]
+  }
+</code></pre></section>
+        </div>
+      </div>
+    </article>
+
     <article class="endpoint-card" data-group="Carrello" data-method="GET" data-search="carrello get /cart visualizza carrello">
       <button class="endpoint-head" aria-expanded="false">
         <span class="verb get">GET</span>
