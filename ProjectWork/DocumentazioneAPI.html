@@ -1,0 +1,1327 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FSL Pascal 2026 - Coworking API Docs</title>
+<style>
+
+:root {
+  --bg: #f5f7fb;
+  --panel: #ffffff;
+  --panel-soft: #f8fafc;
+  --text: #172033;
+  --muted: #657084;
+  --border: #d9e0ec;
+  --shadow: 0 12px 30px rgba(20, 33, 61, .08);
+  --get: #2f80ed;
+  --post: #27ae60;
+  --put: #f2994a;
+  --delete: #eb5757;
+  --dark: #111827;
+  --code: #0f172a;
+  --codeTop: #1f2937;
+  --codeText: #e5e7eb;
+  --accent: #5b6ee1;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+.hero {
+  background: linear-gradient(135deg, #ffffff, #eef2ff);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 34px;
+  box-shadow: var(--shadow);
+  margin: 36px auto 26px;
+  max-width: 1180px;
+  overflow: hidden;
+  position: relative;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 999px;
+  right: -180px;
+  top: -220px;
+  background: radial-gradient(circle, rgba(91,110,225,.25), transparent 62%);
+  pointer-events: none;
+}
+.wrap { max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
+.kicker {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 8px 20px rgba(20,33,61,.05);
+}
+h1 {
+  margin: 18px 0 12px;
+  font-size: clamp(30px, 4vw, 54px);
+  line-height: 1;
+  letter-spacing: -1.4px;
+}
+.subtitle {
+  color: var(--muted);
+  max-width: 850px;
+  line-height: 1.65;
+  margin: 0;
+  font-size: 17px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.stat b { display: block; font-size: 24px; margin-bottom: 5px; color: var(--text); }
+.stat span { color: var(--muted); font-size: 13px; }
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(16px);
+}
+.toolbar-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 14px 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+.search {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  outline: none;
+  box-shadow: 0 6px 18px rgba(20,33,61,.04);
+}
+.search::placeholder { color: #8a94a8; }
+.search:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(91,110,225,.12); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.action {
+  border: 1px solid var(--border);
+  background: var(--dark);
+  color: white;
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  font-weight: 800;
+}
+.action:hover { filter: brightness(1.08); }
+.main { max-width: 1180px; margin: 50px auto; padding: 0 22px 24px; }
+header { margin: 50px 0;}
+.nav { display: flex; align-items: center; gap: 10px; overflow: auto; padding: 10px; margin: 10px 0; border-radius: 16px; }
+.nav-pill {
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(20,33,61,.04);
+}
+.nav-pill.active, .nav-pill:hover { color: #fff; background: linear-gradient(135deg, var(--accent), var(--get)); border-color: transparent; }
+.endpoint-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin: 12px 0;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.endpoint-card.hidden { display: none; }
+.endpoint-head {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 94px minmax(180px, 1fr) minmax(180px, 1fr) 28px;
+  gap: 12px;
+  align-items: center;
+  border: 0;
+  background: white;
+  cursor: pointer;
+  padding: 16px 18px;
+  text-align: left;
+  color: var(--text);
+}
+.endpoint-head:hover { background: #f8fafc; }
+.verb {
+  color: white;
+  border-radius: 8px;
+  padding: 7px 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .4px;
+  min-width: 74px;
+}
+.response {
+  color: white;
+  border-radius: 8px;
+  padding: 5px 8px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .4px;
+  min-width: 74px;
+  margin: 0 10px;
+}
+.verb.get { background: var(--get); }
+.verb.post, .response.ok { background: var(--post); }
+.verb.put { background: var(--put); }
+.verb.delete { background: var(--delete); }
+.path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text);
+  word-break: break-all;
+}
+.summary { color: var(--muted); line-height: 1.45; }
+.chev { color: var(--muted); font-size: 22px; transform: rotate(-90deg); transition: transform .2s; text-align: center; }
+.endpoint-card.open .chev { transform: rotate(0deg); }
+.endpoint-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); background: #fff; }
+.endpoint-card.open .endpoint-body { display: block; }
+.info-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+.info-box, .payload {
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 0;
+}
+.label, .payload-title {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+.url { color: var(--text); overflow-wrap: anywhere; font-weight: 800; font-size: 14px; }
+.param { color: var(--text); overflow-wrap: anywhere; font-weight: 400; font-size: 12px; margin: 10px 0; }
+
+.auth-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 800;
+  font-size: 14px;
+}
+.payload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.payload { padding: 0; overflow: hidden; background: var(--code); border-color: #1f2937; }
+.payload-title {
+  margin: 0;
+  background: var(--codeTop);
+  color: white;
+  padding: 10px 12px;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+pre { margin: 0; padding: 15px; overflow: auto; max-height: 480px; background: var(--code); }
+code {
+  color: var(--codeText);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre;
+}
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88px;
+  color: var(--codeText);
+  font-weight: 800;
+  background: var(--code);
+  padding: 15px;
+}
+.footer { color: var(--muted); text-align: center; padding: 34px 22px 48px; }
+@media (max-width: 900px) {
+  .hero { margin: 20px; padding: 26px; }
+  .stats, .payload-grid, .info-grid { grid-template-columns: 1fr; }
+  .toolbar-inner { grid-template-columns: 1fr; }
+  .endpoint-head { grid-template-columns: 78px 1fr 28px; }
+  .summary { grid-column: 2 / 3; }
+}
+@media (max-width: 560px) {
+  .main { padding: 0 14px 20px; }
+  .endpoint-head { grid-template-columns: 1fr 28px; gap: 8px; }
+  .verb, .path, .summary { grid-column: 1 / 2; }
+}
+@media print {
+  .toolbar, .nav, .actions { display: none; }
+  body { background: white; }
+  .hero, .endpoint-card { box-shadow: none; break-inside: avoid; }
+  .endpoint-body { display: block !important; }
+}
+
+</style>
+</head>
+<body>
+
+<main class="main">
+
+<header>
+  <div class="wrap">
+    <div class="kicker">● FSL Pascal 2026 · API Reference</div>
+    <h1>Coworking - API Docs</h1>
+    <div class="stats">
+      <div class="stat"><b>API Host</b><span>https://pascal2026-434310448117.europe-west12.run.app</span></div>
+      <div class="stat"><b>Autenticazione</b><span>JWT</span></div>
+      <div class="stat"><b>Autorizzazione</b><span>Ruoli: Cliente, Amministrazione</span></div>
+      <div class="stat"><b>Payloads</b><span>JSON</span></div>
+    </div>
+  </div>
+</header>
+<div class="toolbar">
+  <div class="toolbar-inner"><input id="search" class="search" placeholder="Cerca endpoint, metodo, sezione o URL…" /><div class="actions"><button class="action" id="expandAll">Apri tutto</button><button class="action" id="collapseAll">Chiudi tutto</button></div></div>
+</div>
+  <nav class="nav"><b>Filtra per tipologia:</b><button class="nav-pill active" data-filter="all">Tutte</button><button class="nav-pill" data-filter="Sistema">Utils</button><button class="nav-pill" data-filter="Autenticazione">Autenticazione</button><button class="nav-pill" data-filter="Profilo">Profilo Utente</button><button class="nav-pill" data-filter="Spazi">Spazi prenotabili</button><button class="nav-pill" data-filter="Carrello">Carrello</button><button class="nav-pill" data-filter="Prenotazioni Cliente">Prenotazioni Cliente</button><button class="nav-pill" data-filter="Prenotazioni Admin">Prenotazioni Admin</button><button class="nav-pill" data-filter="Utenti">Utenti</button></nav>
+  <section id="endpoints">
+    <article class="endpoint-card" data-group="Sistema" data-method="GET" data-search="sistema get / health check">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/</span>
+        <span class="summary">Health check</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Nessuna</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Pubblica</div>
+          </section>          
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;status&quot;: &quot;ok&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Autenticazione" data-method="POST" data-search="autenticazione post /auth/login login utente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/auth/login</span>
+        <span class="summary">Login utente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/auth/login</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Nessuna</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Pubblica</div>
+          </section>           
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><pre><code>{
+  &quot;email&quot;: &quot;rossi.mario@gmail.com&quot;,
+  &quot;password&quot;: &quot;helloworld&quot;
+}</code></pre></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6...&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Autenticazione" data-method="POST" data-search="autenticazione post /auth/logout logout utente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/auth/logout</span>
+        <span class="summary">Logout utente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/auth/logout</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Profilo" data-method="GET" data-search="profilo get /profile profilo utente autenticato">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/profile</span>
+        <span class="summary">Profilo utente autenticato</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/profile</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 1,
+  &quot;firstName&quot;: &quot;Mario&quot;,
+  &quot;lastName&quot;: &quot;Rossi&quot;,
+  &quot;email&quot;: &quot;rossi.mario@gmail.com&quot;,
+  &quot;credit&quot;: 100,
+  &quot;role&quot;: &quot;Cliente&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Profilo" data-method="POST" data-search="profilo post /fillwallet ricarica credito">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/fillwallet</span>
+        <span class="summary">Ricarica credito Cliente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/fillwallet</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>              
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><pre><code>{
+  &quot;amount&quot;: 100
+}</code></pre></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 1,
+  &quot;firstName&quot;: &quot;Mario&quot;,
+  &quot;lastName&quot;: &quot;Rossi&quot;,
+  &quot;email&quot;: &quot;rossi.mario@gmail.com&quot;,
+  &quot;credit&quot;: 200,
+  &quot;role&quot;: &quot;Cliente&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Spazi" data-method="GET" data-search="spazi get /spaces lista spazi">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/spaces</span>
+        <span class="summary">Lista spazi</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/spaces</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Spazi" data-method="GET" data-search="spazi get /spaces/{id} dettaglio spazio">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/spaces/{id}</span>
+        <span class="summary">Dettaglio spazio</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/spaces/{id}</div>
+            <div class="mono param">{id} = id dello spazio</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 1,
+  &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+  &quot;people&quot;: 12,
+  &quot;slotPrice&quot;: 40,
+  &quot;type&quot;: &quot;Sala Riunioni&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Spazi" data-method="GET" data-search="spazi get /spaces/availability?date=2026-05-30 disponibilità giornaliera">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/spaces/availability?date=2026-05-30</span>
+        <span class="summary">Disponibilità giornaliera</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/spaces/availability?date=2026-05-30</div>
+            <div class="mono param">date = data di cui restituire la desponibilità</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;,
+    &quot;slots&quot;: [
+      {
+        &quot;id&quot;: 9,
+        &quot;start&quot;: &quot;2026-05-30T09:00:00&quot;,
+        &quot;end&quot;: &quot;2026-05-30T10:00:00&quot;,
+        &quot;available&quot;: true
+      }
+    ]
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Carrello" data-method="GET" data-search="carrello get /cart visualizza carrello">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/cart</span>
+        <span class="summary">Visualizza carrello del cliente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/cart</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;,
+    &quot;slots&quot;: [
+      {
+        &quot;id&quot;: 10,
+        &quot;start&quot;: &quot;2026-05-30T10:00:00&quot;,
+        &quot;end&quot;: &quot;2026-05-30T11:00:00&quot;,
+        &quot;available&quot;: false
+      }
+    ]
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Carrello" data-method="POST" data-search="carrello post /cart aggiungi slot al carrello">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/cart</span>
+        <span class="summary">Aggiungi slot al carrello</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/cart</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><pre><code>{
+  &quot;id&quot;: 10  //id dello slot
+}</code></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;,
+    &quot;slots&quot;: [
+      {
+        &quot;id&quot;: 10,
+        &quot;start&quot;: &quot;2026-05-30T10:00:00&quot;,
+        &quot;end&quot;: &quot;2026-05-30T11:00:00&quot;,
+        &quot;available&quot;: false
+      }
+    ]
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Carrello" data-method="DELETE" data-search="carrello delete /cart svuota carrello">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb delete">DELETE</span>
+        <span class="path">/cart</span>
+        <span class="summary">Svuota carrello</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/cart</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Carrello" data-method="DELETE" data-search="carrello delete /cart/{id} rimuovi uno slot dal carrello">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb delete">DELETE</span>
+        <span class="path">/cart/{id}</span>
+        <span class="summary">Rimuovi uno slot dal carrello</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/cart/{id}</div>
+            <div class="mono param">{id} = id dello slot</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Carrello" data-method="POST" data-search="carrello post /checkout checkout carrello">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/checkout</span>
+        <span class="summary">Checkout carrello (scalando credito)</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/checkout</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Prenotazioni Cliente" data-method="GET" data-search="prenotazioni cliente get /bookings?from=2026-05-29&amp;to=2026-05-30 lista prenotazioni cliente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/bookings?from=2026-05-29&amp;to=2026-05-30</span>
+        <span class="summary">Lista prenotazioni cliente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/bookings?from=2026-05-29&amp;to=2026-05-30</div>
+            <div class="mono param">from, to = range di date da visualizzare</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;,
+    &quot;slots&quot;: [
+      {
+        &quot;id&quot;: 9,
+        &quot;start&quot;: &quot;2026-05-30T09:00:00&quot;,
+        &quot;end&quot;: &quot;2026-05-30T10:00:00&quot;,
+        &quot;available&quot;: false
+      }
+    ]
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Prenotazioni Cliente" data-method="GET" data-search="prenotazioni cliente get /bookings/{id} dettaglio prenotazione cliente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/bookings/{id}</span>
+        <span class="summary">Dettaglio prenotazione cliente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/bookings/{id}</div>
+            <div class="mono param">{id} = id dello slot</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;,
+    &quot;slots&quot;: [
+      {
+        &quot;id&quot;: 9,
+        &quot;start&quot;: &quot;2026-05-30T09:00:00&quot;,
+        &quot;end&quot;: &quot;2026-05-30T10:00:00&quot;,
+        &quot;available&quot;: false
+      }
+    ]
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Prenotazioni Cliente" data-method="DELETE" data-search="prenotazioni cliente delete /bookings/{id} cancella prenotazione cliente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb delete">DELETE</span>
+        <span class="path">/bookings/{id}</span>
+        <span class="summary">Cancella prenotazione cliente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/bookings/{id}</div>
+            <div class="mono param">{id} = id dello slot da cancellare</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Cliente</div>
+          </section>    
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Prenotazioni Admin" data-method="GET" data-search="prenotazioni admin get /admin/bookings?from=2026-05-29&amp;to=2026-05-30 lista prenotazioni amministrazione">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/admin/bookings?from=2026-05-29&amp;to=2026-05-30</span>
+        <span class="summary">Lista prenotazioni amministrazione</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/admin/bookings?from=2026-05-29&amp;to=2026-05-30</div>
+            <div class="mono param">from, to = range di date da visualizzare</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section>           
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 9,
+    &quot;start&quot;: &quot;2026-05-30T09:00:00&quot;,
+    &quot;end&quot;: &quot;2026-05-30T10:00:00&quot;,
+    &quot;space&quot;: {
+      &quot;id&quot;: 1,
+      &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+      &quot;type&quot;: &quot;Sala Riunioni&quot;,
+      &quot;people&quot;: 12,
+      &quot;slotPrice&quot;: 40
+    },
+    &quot;user&quot;: {
+      &quot;id&quot;: 1,
+      &quot;firstName&quot;: &quot;Mario&quot;,
+      &quot;lastName&quot;: &quot;Rossi&quot;,
+      &quot;email&quot;: &quot;rossi.mario@gmail.com&quot;,
+      &quot;credit&quot;: 100,
+      &quot;role&quot;: &quot;Cliente&quot;
+    }
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Prenotazioni Admin" data-method="GET" data-search="prenotazioni admin get /admin/bookings/{id} dettaglio prenotazione amministrazione">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/admin/bookings/{id}</span>
+        <span class="summary">Dettaglio prenotazione amministrazione</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/admin/bookings/{id}</div>
+            <div class="mono param">{id} = id dello slot</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 9,
+  &quot;start&quot;: &quot;2026-05-30T09:00:00&quot;,
+  &quot;end&quot;: &quot;2026-05-30T10:00:00&quot;,
+  &quot;space&quot;: {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Sala Riunioni Grande&quot;,
+    &quot;type&quot;: &quot;Sala Riunioni&quot;,
+    &quot;people&quot;: 12,
+    &quot;slotPrice&quot;: 40
+  },
+  &quot;user&quot;: {
+    &quot;id&quot;: 1,
+    &quot;firstName&quot;: &quot;Mario&quot;,
+    &quot;lastName&quot;: &quot;Rossi&quot;,
+    &quot;email&quot;: &quot;rossi.mario@gmail.com&quot;,
+    &quot;credit&quot;: 100,
+    &quot;role&quot;: &quot;Cliente&quot;
+  }
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Prenotazioni Admin" data-method="POST" data-search="prenotazioni admin post /admin/bookings crea prenotazione amministrazione">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/admin/bookings</span>
+        <span class="summary">Crea prenotazione amministrazione</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/admin/bookings</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><pre><code>{
+  &quot;userId&quot;: 1,
+  &quot;slotId&quot;: 9
+}</code></pre></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Prenotazioni Admin" data-method="DELETE" data-search="prenotazioni admin delete /admin/bookings/{id} elimina prenotazione amministrazione">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb delete">DELETE</span>
+        <span class="path">/admin/bookings/{id}</span>
+        <span class="summary">Elimina prenotazione amministrazione</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/admin/bookings/{id}</div>
+            <div class="mono param">{id} = id dello slot</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Utenti" data-method="GET" data-search="utenti get /users lista utenti">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/users</span>
+        <span class="summary">Lista utenti</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/users</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;firstName&quot;: &quot;Mario&quot;,
+    &quot;lastName&quot;: &quot;Rossi&quot;,
+    &quot;email&quot;: &quot;rossi.mario@gmail.com&quot;,
+    &quot;credit&quot;: 100,
+    &quot;role&quot;: &quot;Cliente&quot;
+  }
+]</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Utenti" data-method="GET" data-search="utenti get /users/{id} dettaglio utente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb get">GET</span>
+        <span class="path">/users/{id}</span>
+        <span class="summary">Dettaglio utente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/users/{id}</div>
+            <div class="mono param">{id} = id dell'utente</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 1,
+  &quot;firstName&quot;: &quot;Mario&quot;,
+  &quot;lastName&quot;: &quot;Rossi&quot;,
+  &quot;email&quot;: &quot;rossi.mario@gmail.com&quot;,
+  &quot;credit&quot;: 100,
+  &quot;role&quot;: &quot;Cliente&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Utenti" data-method="POST" data-search="utenti post /users crea utente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/users</span>
+        <span class="summary">Crea utente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/users</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><pre><code>{
+  &quot;firstName&quot;: &quot;Test&quot;,
+  &quot;lastName&quot;: &quot;Test&quot;,
+  &quot;email&quot;: &quot;test@davide.com&quot;,
+  &quot;credit&quot;: 90,
+  &quot;role&quot;: &quot;Cliente&quot;,
+  &quot;password&quot;: &quot;helloworld&quot;
+}</code></pre></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 3,
+  &quot;firstName&quot;: &quot;Test&quot;,
+  &quot;lastName&quot;: &quot;Test&quot;,
+  &quot;email&quot;: &quot;test@davide.com&quot;,
+  &quot;credit&quot;: 90,
+  &quot;role&quot;: &quot;Cliente&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Utenti" data-method="PUT" data-search="utenti put /users modifica utente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb put">PUT</span>
+        <span class="path">/users</span>
+        <span class="summary">Modifica utente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/users</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><pre><code>{
+  &quot;id&quot;: 3,
+  &quot;firstName&quot;: &quot;Test&quot;,
+  &quot;lastName&quot;: &quot;Test&quot;,
+  &quot;email&quot;: &quot;test@davideluppoli.com&quot;,
+  &quot;credit&quot;: 90,
+  &quot;role&quot;: &quot;Cliente&quot;
+}</code></pre></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 3,
+  &quot;firstName&quot;: &quot;Test&quot;,
+  &quot;lastName&quot;: &quot;Test&quot;,
+  &quot;email&quot;: &quot;test@davideluppoli.com&quot;,
+  &quot;credit&quot;: 90,
+  &quot;role&quot;: &quot;Cliente&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Utenti" data-method="DELETE" data-search="utenti delete /users/{id} elimina utente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb delete">DELETE</span>
+        <span class="path">/users/{id}</span>
+        <span class="summary">Elimina utente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/users/{id}</div>
+            <div class="mono param">{id} = id dell'utente</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><div class="empty">Nessun body</div></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><div class="empty">Nessun body</div></section>
+        </div>
+      </div>
+    </article>
+    
+    <article class="endpoint-card" data-group="Utenti" data-method="POST" data-search="utenti post /users/resetpassword reset password utente">
+      <button class="endpoint-head" aria-expanded="false">
+        <span class="verb post">POST</span>
+        <span class="path">/users/resetPassword</span>
+        <span class="summary">Reset password utente</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="endpoint-body">
+        <div class="info-grid">
+          <section class="info-box wide">
+            <div class="label">URL</div>
+            <div class="mono url">{host}/users/resetPassword</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autenticazione</div>
+            <div class="auth-chip">Bearer JWT</div>
+          </section>
+          <section class="info-box">
+            <div class="label">Autorizzazione</div>
+            <div class="auth-chip">Amministrazione</div>
+          </section> 
+        </div>
+        <div class="payload-grid">
+          <section class="payload"><div class="payload-title">Request body</div><pre><code>{
+  &quot;password&quot;: &quot;helloworld&quot;
+}</code></pre></section>
+          <section class="payload"><div class="payload-title">Response body<span class="response ok">200 OK</span></div><pre><code>{
+  &quot;id&quot;: 3,
+  &quot;firstName&quot;: &quot;Test&quot;,
+  &quot;lastName&quot;: &quot;Test&quot;,
+  &quot;email&quot;: &quot;test@davide.com&quot;,
+  &quot;credit&quot;: 90,
+  &quot;role&quot;: &quot;Cliente&quot;
+}</code></pre></section>
+        </div>
+      </div>
+    </article>
+    </section>
+</main>
+<script>
+const cards=[...document.querySelectorAll('.endpoint-card')];
+const search=document.getElementById('search');
+const pills=[...document.querySelectorAll('.nav-pill')];
+let active='all';
+function applyFilter(){
+  const q=search.value.trim().toLowerCase();
+  cards.forEach(c=>{
+    const groupOk=active==='all'||c.dataset.group===active;
+    const searchOk=!q||c.dataset.search.includes(q);
+    c.classList.toggle('hidden',!(groupOk&&searchOk));
+  });
+}
+document.querySelectorAll('.endpoint-head').forEach(btn=>btn.addEventListener('click',()=>{
+  const card=btn.closest('.endpoint-card'); card.classList.toggle('open'); btn.setAttribute('aria-expanded',card.classList.contains('open'));
+}));
+pills.forEach(p=>p.addEventListener('click',()=>{pills.forEach(x=>x.classList.remove('active'));p.classList.add('active');active=p.dataset.filter;applyFilter();}));
+search.addEventListener('input',applyFilter);
+document.getElementById('expandAll').addEventListener('click',()=>cards.filter(c=>!c.classList.contains('hidden')).forEach(c=>c.classList.add('open')));
+document.getElementById('collapseAll').addEventListener('click',()=>cards.forEach(c=>c.classList.remove('open')));
+// apre il primo endpoint per dare subito un esempio visivo
+document.querySelector('.endpoint-card')?.classList.add('open');
+</script>
+</body>
+</html>

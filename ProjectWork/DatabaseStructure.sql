@@ -1,0 +1,57 @@
+DROP DATABASE Coworking;
+CREATE DATABASE Coworking;
+USE Coworking;
+
+CREATE TABLE Roles(
+    id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE Users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    credit FLOAT NOT NULL DEFAULT 0,
+    salt CHAR(128) NOT NULL,
+    password CHAR(128) NOT NULL,
+    roleId INT NOT NULL,
+    FOREIGN KEY (RoleId) REFERENCES Roles(Id)
+);
+
+CREATE TABLE Spaces(
+	id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(100) NOT NULL,
+    people INT NOT NULL,
+    slotPrice FLOAT NOT NULL,
+    ApiKey VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Slots(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    spaceId INT NOT NULL,
+    start DATETIME NOT NULL,
+    end DATETIME NOT NULL,
+    userId INT,
+    FOREIGN KEY (spaceId) REFERENCES Spaces(Id),
+    FOREIGN KEY (userId) REFERENCES Users(Id)
+);
+
+CREATE TABLE ShoppingCarts(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	userId INT NOT NULL,
+    slotId INT NOT NULL,
+	FOREIGN KEY (userId) REFERENCES Users(Id),
+    FOREIGN KEY (slotId) REFERENCES Slots(Id)
+);
+
+CREATE TABLE RevokedTokens(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	tokenHash VARCHAR(255) NOT NULL UNIQUE,
+    userId INT NOT NULL,
+    revokedAt DATETIME NOT NULL,
+    expiresAt DATETIME NOT NULL,
+	FOREIGN KEY (userId) REFERENCES Users(Id),
+	INDEX (expiresAt)
+);
