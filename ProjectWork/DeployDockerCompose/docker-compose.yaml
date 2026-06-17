@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mysql:9.5.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: Coworking
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+  backendapi:
+    image: dluppoli/pascal2026_pwapi:1
+    container_name: backendapi
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=Coworking;User=root;Password=rootpassword;
+    ports:
+      - "8080:8080"    
+  frontendcliente:
+    image: dluppoli/pascal2026_pwfrontendcliente:1
+    container_name: frontendcliente
+    restart: unless-stopped
+    ports:
+      - "4000:80"    
+
+  frontendadmin:
+    image: dluppoli/pascal2026_pwfrontendadmin:1
+    container_name: frontendadmin
+    restart: unless-stopped
+    ports:
+      - "4010:80"    
+
+  digsigapi:
+    image: dluppoli/pascal2026_pwdigsigapi:1
+    container_name: digsigapi
+    restart: unless-stopped
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=rootpassword
+      - DB_NAME=Coworking
+      - DB_PORT=3306
+      - PORT=3000
+      - QR_URL=https//frontendcliente:4000/spaceavailability
+    ports:
+      - "4080:3000"    
+
+  digsigfront:
+    image: dluppoli/pascal2026_pwdigsigfront:1
+    container_name: digsigfront
+    restart: unless-stopped
+    ports:
+      - "4020:80"    
+
+volumes:
+  mysql_data:
